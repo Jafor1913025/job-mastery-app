@@ -67,11 +67,11 @@ class _WebViewScreenState extends State<WebViewScreen> {
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
 
-        // চেক করবে WebView-তে পেছনে যাওয়ার মতো পেজ আছে কিনা
+        // WebView-তে ব্যাক পেজ থাকলে পেছনে যাবে
         if (_controller != null && await _controller!.canGoBack()) {
           await _controller!.goBack();
         } else {
-          // আর কোনো ব্যাক হিস্ট্রি না থাকলে অ্যাপ বন্ধ বা ব্যাক করবে
+          // কোনো হিস্ট্রি না থাকলে অ্যাপ বন্ধ হবে
           if (context.mounted) {
             Navigator.of(context).maybePop();
           }
@@ -97,7 +97,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
             ? Center(
                 child: Padding(
                   padding: const EdgeInsets.all(24.0),
-                  functionality: Column(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(
