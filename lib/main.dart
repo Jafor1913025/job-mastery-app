@@ -33,8 +33,7 @@ class WebViewScreen extends StatefulWidget {
 class _WebViewScreenState extends State<WebViewScreen> {
   WebViewController? _controller;
   bool _isLoading = true;
-  final String _appUrl =
-      'https://jobmasterybd.netlify.app';
+  final String _appUrl = 'https://jobmasterybd.netlify.app';
 
   @override
   void initState() {
@@ -63,75 +62,91 @@ class _WebViewScreenState extends State<WebViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Job Mastery BD'),
-        backgroundColor: Colors.indigo,
-        foregroundColor: Colors.white,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              if (!kIsWeb && _controller != null) {
-                _controller!.reload();
-              }
-            },
-          ),
-        ],
-      ),
-      body: kIsWeb
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.mobile_friendly,
-                      size: 80,
-                      color: Colors.indigo,
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Job Mastery BD App',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+
+        // চেক করবে WebView-তে পেছনে যাওয়ার মতো পেজ আছে কিনা
+        if (_controller != null && await _controller!.canGoBack()) {
+          await _controller!.goBack();
+        } else {
+          // আর কোনো ব্যাক হিস্ট্রি না থাকলে অ্যাপ বন্ধ বা ব্যাক করবে
+          if (context.mounted) {
+            Navigator.of(context).maybePop();
+          }
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Job Mastery BD'),
+          backgroundColor: Colors.indigo,
+          foregroundColor: Colors.white,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: () {
+                if (!kIsWeb && _controller != null) {
+                  _controller!.reload();
+                }
+              },
+            ),
+          ],
+        ),
+        body: kIsWeb
+            ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  functionality: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.mobile_friendly,
+                        size: 80,
+                        color: Colors.indigo,
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'অ্যান্ড্রয়েড অ্যাপের জন্য ওয়েবভিউ সফলভাবে কনফিগার করা হয়েছে।',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 15, color: Colors.grey),
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.indigo,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Job Mastery BD App',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      onPressed: () {},
-                      icon: const Icon(Icons.android),
-                      label: const Text('APK তৈরির জন্য প্রস্তুত'),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          : Stack(
-              children: [
-                WebViewWidget(controller: _controller!),
-                if (_isLoading)
-                  const Center(
-                    child: CircularProgressIndicator(),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'অ্যান্ড্রয়েড অ্যাপের জন্য ওয়েবভিউ সফলভাবে কনফিগার করা হয়েছে।',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 15, color: Colors.grey),
+                      ),
+                      const SizedBox(height: 24),
+                      ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.indigo,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                        ),
+                        onPressed: () {},
+                        icon: const Icon(Icons.android),
+                        label: const Text('APK তৈরির জন্য প্রস্তুত'),
+                      ),
+                    ],
                   ),
-              ],
-            ),
+                ),
+              )
+            : Stack(
+                children: [
+                  WebViewWidget(controller: _controller!),
+                  if (_isLoading)
+                    const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                ],
+              ),
+      ),
     );
   }
 }
