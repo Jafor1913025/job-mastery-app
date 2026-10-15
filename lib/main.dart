@@ -34,7 +34,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
   WebViewController? _controller;
   bool _isLoading = true;
   final String _appUrl =
-      'https://script.google.com/macros/s/AKfycbzkmeF2xavYmU44aP6qTsMlCFKSpPUnuFYc3OpiqdPvddi0AFWVfEkwOT0RLtL3Hxun/exec';
+      'https://jobmasterybd.netlify.app';
 
   @override
   void initState() {
