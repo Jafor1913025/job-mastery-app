@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'update_checker.dart'; // নতুন: আপডেট চেকার ফাইল ইমপোর্ট করা হলো
 
 void main() {
   runApp(const JobMasteryApp());
@@ -38,6 +39,12 @@ class _WebViewScreenState extends State<WebViewScreen> {
   @override
   void initState() {
     super.initState();
+
+    // নতুন: অ্যাপ ওপেন হওয়ার পর অটোমেটিক আপডেট চেক রান করবে
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      UpdateChecker.checkForUpdate(context);
+    });
+
     if (!kIsWeb) {
       _controller = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -67,11 +74,9 @@ class _WebViewScreenState extends State<WebViewScreen> {
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
 
-        // WebView-তে ব্যাক পেজ থাকলে পেছনে যাবে
         if (_controller != null && await _controller!.canGoBack()) {
           await _controller!.goBack();
         } else {
-          // কোনো হিস্ট্রি না থাকলে অ্যাপ বন্ধ হবে
           if (context.mounted) {
             Navigator.of(context).maybePop();
           }
