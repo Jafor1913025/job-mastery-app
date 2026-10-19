@@ -33,8 +33,21 @@ jobs:
       - name: Build APK
         run: flutter build apk --release
 
+      - name: Rename APK File
+        run: cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/Job_Mastery_BD.apk
+
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: job-mastery-bd-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/Job_Mastery_BD.apk
+
+      - name: Create or Update GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: latest
+          name: "Latest Release"
+          body: "Automated build release"
+          files: build/app/outputs/flutter-apk/Job_Mastery_BD.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
