@@ -34,7 +34,7 @@ class WebViewScreen extends StatefulWidget {
 class _WebViewScreenState extends State<WebViewScreen> {
   WebViewController? _controller;
   bool _isLoading = true;
-  final String _appUrl = 'https://jobmasterybd.netlify.app';
+  final String _appUrl = 'https://jobmasterybd.netlify.app?source=app';
 
   @override
   void initState() {
